@@ -2,28 +2,36 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String[] operations) {
-        int[] answer = {};
-        PriorityQueue<Integer> maxHeap = new PriorityQueue<Integer>((a, b) -> b - a);
-        PriorityQueue<Integer> minHeap = new PriorityQueue<Integer>();
-        
-        for(String op : operations) {
-            String[] split = op.split(" ");
-            int num = Integer.parseInt(split[1]);
-            if(split[0].equals("I")) {
-                maxHeap.offer(num);
-                minHeap.offer(num);                    
-            }  else {
-                if(maxHeap.isEmpty()) continue;
-                else if ( num > 0 ) {
-                    minHeap.remove(maxHeap.poll());
-                } else {
-                    maxHeap.remove(minHeap.poll());
+         int[] answer = new int[2];
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+
+        for (String operation : operations) {
+            String[] split = operation.split(" ");
+            String command = split[0];
+            int value = Integer.parseInt(split[1]);
+
+            if (command.equals("I")) {
+                maxHeap.offer(value);
+                minHeap.offer(value);
+            } else if (command.equals("D")) {
+                if (!maxHeap.isEmpty()) {
+                    if (value == 1) {
+                        int max = maxHeap.poll();
+                        minHeap.remove(max);
+                    } else if (value == -1) {
+                        int min = minHeap.poll();
+                        maxHeap.remove(min);
+                    }
                 }
             }
         }
-        
-        if(minHeap.isEmpty()) return new int[] {0, 0};
-        
-        return new int[] {maxHeap.peek(), minHeap.peek()};
+
+        if (!maxHeap.isEmpty() && !minHeap.isEmpty()) {
+            answer[0] = maxHeap.poll();
+            answer[1] = minHeap.poll();
+        }
+
+        return answer;
     }
 }
