@@ -1,3 +1,4 @@
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,15 +30,21 @@ class Main {
         });
 
         int rank = 1;
+        if(countries[0].id == K) {
+            System.out.println(rank);
+            return;
+        }
+        for (int i = 1; i < countries.length; i++) {
+            if (!countries[i].isSame(countries[i - 1])) {
+                 rank = i + 1;
+            }
 
-        for(int i = 0; i < countries.length; i++) {
             if(countries[i].id == K) {
                 break;
             }
-            rank++;
         }
 
-        System.out.println(rank - 1);
+        System.out.println(rank);
     }
 
     static int getNextInt(StringTokenizer st) {
@@ -49,14 +56,17 @@ class Main {
         int gold;
         int silver;
         int bronze;
-        int sum;
 
         public Country(int id, int gold, int silver, int bronze) {
             this.id = id;
             this.gold = gold;
             this.silver = silver;
             this.bronze = bronze;
-            this.sum = gold * 3 + silver * 2 + bronze;
+        }
+
+        private boolean isSame(Country country) {
+            return country.gold == this.gold && country.silver == this.silver
+                    && country.bronze == this.bronze;
         }
     }
 }
