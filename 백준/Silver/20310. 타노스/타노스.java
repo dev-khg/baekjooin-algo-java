@@ -7,19 +7,35 @@ class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String input = br.readLine();
-
-        int inputLength = input.length();
-        input = input.replaceAll("0", "");
-        int onCount = input.length();
-        int offCount = inputLength - onCount;
-        offCount /= 2;
-        onCount /= 2;
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < offCount; i++) {
-            sb.append(0);
+        char[] chars = input.toCharArray();
+        int offCount = 0;
+        int onCount = 0;
+        for (char aChar : chars) {
+            if (aChar == '0') {
+                offCount++;
+            } else onCount++;
         }
-        for (int i = 0; i < onCount; i++) {
-            sb.append(1);
+
+        onCount /= 2;
+        offCount /= 2;
+
+        for (int i = 0; i < chars.length && onCount > 0; i++) {
+            if (chars[i] == '1') {
+                onCount--;
+                chars[i] = '.';
+            }
+        }
+
+        for (int i = chars.length - 1; i >= 0 && offCount > 0; i--) {
+            if (chars[i] == '0') {
+                offCount--;
+                chars[i] = '.';
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for (char aChar : chars) {
+            if (aChar != '.')
+                sb.append(aChar);
         }
 
         System.out.println(sb);
