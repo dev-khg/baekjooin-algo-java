@@ -27,10 +27,18 @@ b_sum.sort()
 answer = 0
 
 for a in a_sum:
-    if c - a < 0:
+    target = c - a
+    if target < 0:
         continue
 
-    idx = bisect.bisect_right(b_sum, c - a)
-    answer += idx
+    lt, rt = 0, len(b_sum) - 1
+    while lt <= rt:
+        mid = (lt + rt) // 2
+        if b_sum[mid] <= target:
+            lt = mid + 1
+        else:
+            rt = mid - 1
+
+    answer += lt
 
 print(answer)
