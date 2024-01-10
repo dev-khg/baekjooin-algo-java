@@ -2,17 +2,16 @@
 
 N = int(input())
 
-rows = []
+rows = [0] * N
 answer = 0
-
 
 def is_promissing(row: int, col: int) -> bool:
     global rows
 
-    for r, c in enumerate(rows):
-        if r == row or c == col:
+    for r in range(row):
+        if r == row or rows[r] == col:
             return False
-        elif abs(r - row) == abs(c - col):
+        elif abs(r - row) == abs(rows[r] - col):
             return False
 
     return True
@@ -26,10 +25,9 @@ def dfs(L: int):
         return
 
     for i in range(N):
+        rows[L] = i
         if is_promissing(L, i):
-            rows.append(i)
             dfs(L + 1)
-            rows.pop()
 
 dfs(0)
 print(answer)
