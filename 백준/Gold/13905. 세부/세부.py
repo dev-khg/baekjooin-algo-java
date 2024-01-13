@@ -1,40 +1,42 @@
 import heapq
+import sys
+
+input = sys.stdin.readline
 
 
-def find(x: int) -> int:
-    if x != parent[x]:
-        parent[x] = find(parent[x])
-    return parent[x]
+def find(v: int) -> int:
+    if parents[v] != v:
+        parents[v] = find(parents[v])
+    return parents[v]
 
 
-def union(x: int, y: int) -> None:
-    root_x = find(x)
-    root_y = find(y)
-
+def union(root_x: int, root_y: int):
     if root_x < root_y:
-        parent[root_y] = root_x
+        parents[root_y] = root_x
     elif root_x > root_y:
-        parent[root_x] = root_y
+        parents[root_x] = root_y
 
 
 n, m = map(int, input().split())
-s, e = map(int, input().split())
-
-edges = []
+S, E = map(int, input().split())
+parents = list(range(n + 1))
+heap = []
 for _ in range(m):
-    v1, v2, w = map(int, input().split())
-    heapq.heappush(edges, (-w, v1, v2))
+    A, B, cost = map(int, input().split())
+    heapq.heappush(heap, (-cost, A, B))
 
-parent = [i for i in range(n + 1)]
+answer = 0
+while heap:
+    cost, A, B = heapq.heappop(heap)
 
-result = 0
-while edges:
-    w, v1, v2 = heapq.heappop(edges)
+    fa = find(A)
+    fb = find(B)
 
-    if find(v1) != find(v2):
-        union(v1, v2)
+    if fa != fb:
+        union(fa, fb)
 
-        if find(s) == find(e):
-            result = -w
+        if find(S) == find(E):
+            answer = -cost
             break
-print(result)
+
+print(answer)
