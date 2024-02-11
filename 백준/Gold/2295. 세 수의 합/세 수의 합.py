@@ -3,10 +3,12 @@ import sys
 input = sys.stdin.readline
 
 N = int(input())
+
 nums = [int(input()) for _ in range(N)]
 nums.sort()
 
 sum_set = set()
+
 for i in nums:
     for j in nums:
         sum_set.add(i + j)
