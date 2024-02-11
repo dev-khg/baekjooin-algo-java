@@ -1,5 +1,4 @@
 
-
 N = int(input())
 
 rows = [0] * N
