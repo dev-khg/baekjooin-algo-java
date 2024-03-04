@@ -1,40 +1,36 @@
-
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class Main {
-
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        Stack<Integer> s = new Stack<>();
         int N = Integer.parseInt(br.readLine());
-        int[] arr = new int[N];
-
+        int[] answer = new int[N];
+        int[] nums = new int[N];
+        Arrays.fill(answer, -1);
         StringTokenizer st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
+            nums[i] = Integer.parseInt(st.nextToken());
         }
-        int[] res = new int[N];
-        Stack<Integer> s = new Stack<>();
 
         for (int i = N - 1; i >= 0; i--) {
-            while (!s.isEmpty() && s.peek() <= arr[i]) {
+            while (!s.isEmpty() && s.peek() <= nums[i]) {
                 s.pop();
             }
-            if (s.isEmpty()) {
-                res[i] = -1;
-            } else {
-                res[i] = s.peek();
-            }
 
-            s.push(arr[i]);
+            if (!s.isEmpty()) {
+                answer[i] = s.peek();
+            }
+            s.push(nums[i]);
         }
 
         StringBuilder sb = new StringBuilder();
-        for (int re : res) {
-            sb.append(re).append(" ");
+        for (int i = 0; i < answer.length; i++) {
+            sb.append(answer[i]).append(" ");
         }
 
         System.out.println(sb);
