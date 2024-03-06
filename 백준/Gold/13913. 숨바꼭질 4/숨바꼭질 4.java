@@ -1,54 +1,50 @@
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main {
-
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
-
-        st = new StringTokenizer(br.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
         int N = Integer.parseInt(st.nextToken());
         int K = Integer.parseInt(st.nextToken());
 
-
-        int[] cost = new int[100001];
         int[] before = new int[100001];
+        int[] cost = new int[100001];
 
         cost[N] = 1;
+
         Queue<Integer> q = new LinkedList<>();
         q.offer(N);
 
         while (!q.isEmpty()) {
-            Integer poll = q.poll();
+            Integer current = q.poll();
 
-            if (poll == K) {
+            if(current == K) {
                 break;
             }
 
-            int next;
+            int next = current + 1;
+            if (next >= 0 && next <= 10_0000 && cost[next] == 0) {
+                q.add(next);
+                cost[next] = cost[current] + 1;
+                before[next] = current;
+            }
 
-            next = poll - 1;
-            if (next >= 0 && cost[next] == 0) {
-                before[next] = poll;
-                cost[next] = cost[poll] + 1;
-                q.offer(next);
+            next = current - 1;
+            if (next >= 0 && next <= 10_0000 && cost[next] == 0) {
+                q.add(next);
+                cost[next] = cost[current] + 1;
+                before[next] = current;
             }
-            next = poll + 1;
-            if (next <= 100000 && cost[next] == 0) {
-                before[next] = poll;
-                cost[next] = cost[poll] + 1;
-                q.offer(next);
-            }
-            next = poll * 2;
-            if (next <= 100000 && cost[next] == 0) {
-                before[next] = poll;
-                cost[next] = cost[poll] + 1;
-                q.offer(next);
+
+            next = current * 2;
+            if (next >= 0 && next <= 10_0000 && cost[next] == 0) {
+                q.add(next);
+                cost[next] = cost[current] + 1;
+                before[next] = current;
             }
         }
 
@@ -68,6 +64,5 @@ public class Main {
         }
 
         System.out.println(sb);
-
     }
 }
