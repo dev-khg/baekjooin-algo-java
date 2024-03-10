@@ -2,7 +2,9 @@ import collections
 import heapq
 import sys
 
+
 input = sys.stdin.readline
+
 
 N, M, X = map(int, input().split())
 
@@ -10,36 +12,37 @@ graph = collections.defaultdict(list)
 reverse_graph = collections.defaultdict(list)
 
 for _ in range(M):
-    A, B, cost = map(int, input().split())
-    graph[A].append((B, cost))
-    reverse_graph[B].append((A, cost))
+    u, v, w = map(int, input().split())
+    graph[u].append((v, w))
+    reverse_graph[v].append((u, w))
 
 
-def calculate_distance(board, start):
-    global N
-    min_heap = []
-    distance = [sys.maxsize] * (N + 1)
-    min_heap.append((0, start))
-    distance[start] = 0
+def dijkstra_set(board) -> list[int]:
+    global N, X
+
+    dist = [sys.maxsize] * (N + 1)
+    dist[X] = 0
+    min_heap = [(0, X)]
+
     while min_heap:
         cost, current = heapq.heappop(min_heap)
-        if distance[current] < cost:
+
+        if cost > dist[current]:
             continue
-        distance[current] = cost
 
-        for node, next_cost in board[current]:
-            if distance[node] > distance[current] + next_cost:
-                distance[node] = distance[current] + next_cost
-                heapq.heappush(min_heap, (distance[node], node))
+        for next_node, next_cost in board[current]:
+            if dist[next_node] > next_cost + cost:
+                dist[next_node] = next_cost + cost
+                heapq.heappush(min_heap, (dist[next_node], next_node))
 
-    return distance
+    return dist
 
 
-go_distance = calculate_distance(graph, X)
-back_distance = calculate_distance(reverse_graph, X)
-
+distance = dijkstra_set(graph)
+reverse_distance = dijkstra_set(reverse_graph)
 answer = 0
-for i in range(1, len(go_distance)):
-    answer = max(go_distance[i] + back_distance[i], answer)
+for i in range(1, N + 1):
+    answer = max(answer, distance[i] + reverse_distance[i])
 
 print(answer)
+
