@@ -1,5 +1,13 @@
 import collections
+import heapq
 import itertools
+import sys
+
+
+input = sys.stdin.readline
+
+
+combi = []
 
 
 def calculate_s_count(picked) -> int:
@@ -34,20 +42,17 @@ def is_connected(picked) -> bool:
 
     return count == 7
 
-
-combi = []
-
 for i in range(5):
     cols = input()
     for j in range(5):
         combi.append((i, j, cols[j]))
 
-count = 0
 answer = 0
+
 for picked in itertools.combinations(combi, 7):
     if calculate_s_count(picked) >= 4 and is_connected(picked):
         answer += 1
 
-
 print(answer)
+
 
