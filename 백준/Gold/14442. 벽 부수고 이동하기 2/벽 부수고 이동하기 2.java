@@ -1,18 +1,18 @@
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.*;
+import java.io.*;
+import java.math.BigDecimal;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
 public class Main {
+
     static int[] dy = {-1, 1, 0, 0};
     static int[] dx = {0, 0, -1, 1};
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
-
-        st = new StringTokenizer(br.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
@@ -29,8 +29,8 @@ public class Main {
         }
 
         Queue<int[]> q = new LinkedList<>();
-        q.offer(new int[]{0, 0, 0, 0});
-
+        q.add(new int[]{0, 0, 0, 0});
+        int answer = -1;
         while (!q.isEmpty()) {
             int[] poll = q.poll();
             int y = poll[0];
@@ -38,10 +38,9 @@ public class Main {
             int cost = poll[2];
             int dist = poll[3];
 
-
             if (y == N - 1 && x == M - 1) {
-                System.out.println(dist + 1);
-                return;
+                answer = dist + 1;
+                break;
             }
 
             for (int i = 0; i < 4; i++) {
@@ -49,15 +48,15 @@ public class Main {
                 if (ny >= 0 && nx >= 0 && ny < N && nx < M) {
                     if (board[ny][nx] == 0 && !visited[ny][nx][cost]) {
                         visited[ny][nx][cost] = true;
-                        q.offer(new int[]{ny, nx, cost, dist + 1});
+                        q.add(new int[]{ny, nx, cost, dist + 1});
                     } else if (board[ny][nx] == 1 && cost < K && !visited[ny][nx][cost + 1]) {
                         visited[ny][nx][cost + 1] = true;
-                        q.offer(new int[]{ny, nx, cost + 1, dist + 1});
+                        q.add(new int[]{ny, nx, cost + 1, dist + 1});
                     }
                 }
             }
         }
 
-        System.out.println(-1);
+        System.out.println(answer);
     }
 }
