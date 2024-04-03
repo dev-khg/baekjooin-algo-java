@@ -1,76 +1,84 @@
-
+import javax.naming.NameNotFoundException;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
 public class Main {
-    // y x z
-    static int[][] point = {
-            {1, 0, 0},
+    static int[][] moves = {
             {-1, 0, 0},
+            {1, 0, 0},
             {0, 1, 0},
             {0, -1, 0},
             {0, 0, 1},
             {0, 0, -1},
     };
-    static int[][][] board;
 
-    public static void main(String[] args) throws IOException {
+    static int M;
+    static int N;
+    static int H;
+
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int M = Integer.parseInt(st.nextToken());
-        int N = Integer.parseInt(st.nextToken());
-        int H = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
+        H = Integer.parseInt(st.nextToken());
 
-        board = new int[H][N][M];
-        Queue<int[]> q = new LinkedList<>();
+        int[][][] board = new int[N][M][H];
 
-        for (int z = 0; z < H; z++) {
-            for (int y = 0; y < N; y++) {
+        Queue<int[]> tomatoQ = new LinkedList<>();
+
+        for (int i = 0; i < H; i++) {
+            for (int j = 0; j < N; j++) {
                 st = new StringTokenizer(br.readLine());
-                for (int x = 0; x < M; x++) {
-                    board[z][y][x] = Integer.parseInt(st.nextToken());
-                    if (board[z][y][x] == 1) {
-                        q.offer(new int[]{z, y, x});
+                for (int k = 0; k < M; k++) {
+                    board[j][k][i] = Integer.parseInt(st.nextToken());
+
+                    if (board[j][k][i] == 1) {
+                        tomatoQ.offer(new int[]{j, k, i}); // y, x, z
                     }
                 }
             }
         }
 
-        while (!q.isEmpty()) {
-            int[] poll = q.poll();
+        int answer = 0;
 
-            for (int[] ints : point) {
-                int nz = poll[0] + ints[0];
-                int ny = poll[1] + ints[1];
-                int nx = poll[2] + ints[2];
+        while (!tomatoQ.isEmpty()) {
+            int size = tomatoQ.size();
+            answer++;
 
-                if (ny >= 0 && nx >= 0 && nz >= 0 && ny < N && nx < M && nz < H && board[nz][ny][nx] == 0) {
-                    board[nz][ny][nx] = board[poll[0]][poll[1]][poll[2]] + 1;
-                    q.offer(new int[]{nz, ny, nx});
+            for (int i = 0; i < size; i++) {
+                int[] poll = tomatoQ.poll();
+
+                for (int[] move : moves) {
+                    int ny = poll[0] + move[0], nx = poll[1] + move[1], nz = poll[2] + move[2];
+
+                    if (isInRange(ny, nx, nz) && board[ny][nx][nz] == 0) {
+                        board[ny][nx][nz] = 1;
+                        tomatoQ.offer(new int[]{ny, nx, nz});
+                    }
                 }
             }
         }
 
-        int i = checkDone(board);
-        if (i == -1)
-            System.out.println(-1);
-        else
-            System.out.println(i - 1);
+        for (int i = 0; i < H; i++) {
+            for (int j = 0; j < N; j++) {
+                for (int k = 0; k < M; k++) {
+                    if (board[j][k][i] == 0) {
+                        System.out.println(-1);
+                        return;
+                    }
+                }
+            }
+        }
+
+        System.out.println(answer - 1);
     }
 
-    static int checkDone(int[][][] board) {
-        int count = 0;
-        for (int i = 0; i < board[0][0].length; i++) {
-            for (int j = 0; j < board.length; j++) {
-                for (int k = 0; k < board[0].length; k++) {
-                    if (board[j][k][i] == 0) return -1;
-                    count = Math.max(count, board[j][k][i]);
-                }
-            }
-        }
-        return count;
+    static boolean isInRange(int y, int x, int z) {
+        return y >= 0 && x >= 0 && z >= 0 && y < N && x < M && z < H;
     }
 }
